@@ -21,9 +21,8 @@ a_exc = sqrt(2/we_exc);
 lmb_ground = sqrt(2*mu_I2*De_ground)/(a_ground*hbar);
 lmb_exc = sqrt(2*mu_I2*De_exc)/(a_exc*hbar);
 
-electronic_energy = inverse_cm_to_J(15769.01);
+% electronic_energy = inverse_cm_to_J(15769.01);
 T = 100;  % Temperature
-sig = 5e-10;  % sigma for gauss distribution
 laser_wavelength = 612e-9;
 laser_energy = h*c/laser_wavelength;
 
@@ -47,6 +46,10 @@ N = 2048;
 a = 5; b = 25;
 dx = (b-a)/N;
 x=linspace(a,b,N);  % Seems to fit everything
+y1=0*x;
+y2=0*x;
+
+load('overlap_data')
 
 %%
 overlap0 = zeros(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1);
@@ -65,27 +68,30 @@ overlap = overlap0.^2;  % This is what we are interested in
 clf
 subplot(1,2,1)
 imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], overlap)
+% imagesc([0 5], [lower_limit_ground upper_limit_ground], overlap(:,1:5))
 title("Probability of transition")
 xlabel("Vibrational mode of excited state")
 ylabel("Vibrational mode of ground state")
 colorbar
 %%
-energy_difference = electronic_energy*ones(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1-lower_limit_exc);
+energy_difference = zeros(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1-lower_limit_exc);
 for j=lower_limit_ground:upper_limit_ground
     for k=lower_limit_exc:upper_limit_exc
         fprintf("j=%d, k=%d\n",j,k)
-        energy_difference(j+1,k+1) = energy_difference(j+1,k+1) - (morse_energy_exc(k) - morse_energy_ground(j));
+        energy_difference(j+1,k+1) = morse_energy_exc(k) - morse_energy_ground(j);
     end
 end
 
 subplot(1,2,2)
 imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], energy_difference)
+% imagesc([0 5], [lower_limit_ground upper_limit_ground], energy_difference(:,1:5))
 title("Energy difference E_{exc}(k) - E_{ground}(j)")
 xlabel("k")
 ylabel("j")
 colorbar
 
 %%
+overlap = overlap(:,1); energy_difference = energy_difference(:,1);
 clf
 flat_energy = reshape(energy_difference, [1 numel(energy_difference)]);
 
@@ -93,8 +99,16 @@ flat_overlap = reshape(overlap, [1 numel(overlap)]);
 % flat_overlap = flat_overlap / max(flat_overlap);
 wavelength = energy_to_m(flat_energy);
 
+% Choose interval and sigma
+% interval_start = 0e-6;
+% interval_end = 1e-6;
+% sig = 3e-9;  % sigma for gauss distribution
+% 
+% wavelength = wavelength(wavelength>interval_start & wavelength<interval_end);
+% flat_overlap = flat_overlap(wavelength>interval_start & wavelength<interval_end);
 
-x = linspace(min(wavelength),max(wavelength),2048);
+
+x = linspace(min(wavelength),max(wavelength),10000);
 y = 0*x;
 
 for j=1:length(wavelength)
@@ -113,13 +127,13 @@ x = linspace(a,b,N);
 subplot(2,1,1)
 plot(x,morse_psi_ground(x,0,dx)), hold on
 plot(x,morse_psi_ground(x,1,dx))
-plot(x,morse_psi_ground(x,2,dx))
-plot(x,morse_psi_ground(x,121,dx)), hold off
+plot(x,morse_psi_ground(x,80,dx)), hold off
+legend("v=0","v=1","v=80")
 % plot(x,morse_psi_ground(x,5))
 title("Ground state")
 subplot(2,1,2)
 plot(x,morse_psi_exc(x,0,dx)), hold on
 plot(x,morse_psi_exc(x,1,dx))
-plot(x,morse_psi_exc(x,2,dx))
-plot(x,morse_psi_exc(x,48,dx)), hold off  % Upper limit for excited state
+plot(x,morse_psi_exc(x,2,dx)), hold off
+legend("v=0","v=1","v=2")
 title("Excited state")
