@@ -12,9 +12,7 @@ we_xe = 0.614*100;  % m-1
 we = 214.50*100;  % m-1
 De = h*c*we^2/(4*we_xe);  % J
 a = we*2*pi*c*sqrt(mu_I2/(2*De));  % m-1
-fprintf("a=%f\n",a)
 lmb = sqrt(2*mu_I2*De)/(a*hbar);
-fprintf("lmb=%f\n",lmb)
 x = a*r;
 xe = a*re;
 
