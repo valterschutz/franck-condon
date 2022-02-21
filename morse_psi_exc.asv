@@ -1,20 +1,18 @@
-function y = morse_psi_ground(r, n, dx)
+function y = morse_psi_exc(r, n, dx)
 % Universal constants
 u = 1.66e-27;  % kg
 h = 6.626e-34;  % J/Hz
 hbar = h/(2*pi);  % J/Hz
-c = 299792458;  % m/s
 
 % Constants for iodine
 mu_I2 = 126.90447/2*u;  % kg
-re = 2.666e-10;  % m
-we_xe = 0.614*100;  % m-1
-we = 214.50*100;  % m-1
-De = h*c*we^2/(4*we_xe);  % J
-a = we*2*pi*c*sqrt(mu_I2/(2*De));  % m-1
-fprintf("a=%f\n",a)
+re = 3.024e-10;  % m
+we_xe = 0.764*100;  % m-1
+we = 125.69*100;  % m-1
+% De = we^2/(4*we_xe) - we/2 + we_xe/4;
+De = h*c*we^2/(4*we_xe);  %
+a = sqrt(2/we);
 lmb = sqrt(2*mu_I2*De)/(a*hbar);
-fprintf("lmb=%f\n",lmb)
 x = a*r;
 xe = a*re;
 
@@ -24,5 +22,6 @@ y = z.^(lmb-n-1/2).*exp(-z/2).*laguerreL(n, 2*lmb-2*n-1,z);
 % Normalization
 N = sum(y.^2)*dx;
 y = y/sqrt(N);
+
 end
 

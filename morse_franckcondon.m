@@ -10,16 +10,14 @@ c = 299792458;  % m/s
 mu_I2 = 126.90447/2*u;  % kg
 re_ground = 2.666e-10;  % m
 re_exc = 3.024e-10;  % m
-we_xe_ground = inverse_cm_to_J(0.614);  % J
-we_xe_exc = inverse_cm_to_J(0.764);  % J
-we_ground = inverse_cm_to_J(214.50); % J
-we_exc = inverse_cm_to_J(125.69);  % J
-% De_ground = we_ground^2/(4*we_xe_ground) - we_ground/2 + we_xe_ground/4;
-De_ground = we_ground^2/(4*we_xe_ground);
-% De_exc = we_exc^2/(4*we_xe_exc) - we_exc/2 + we_xe_exc/4;
-De_exc = we_exc^2/(4*we_xe_exc);
-a_ground = sqrt(2/we_ground);
-a_exc = sqrt(2/we_exc);
+we_xe_ground = 0.614*100;  % m-1
+we_xe_exc = 0.764*100;  % m-1
+we_ground = 214.50*100; % m-1
+we_exc = 125.69*100;  % m-1
+De_ground = h*c*we_ground^2/(4*we_xe_ground);  % J
+De_exc = h*c*we_exc^2/(4*we_xe_exc);  % J
+a_ground = we_ground*2*pi*c*sqrt(mu_I2/(2*De_ground));  % m-1
+a_exc = we_exc*2*pi*c*sqrt(mu_I2/(2*De_exc));  % m-1
 lmb_ground = sqrt(2*mu_I2*De_ground)/(a_ground*hbar);
 lmb_exc = sqrt(2*mu_I2*De_exc)/(a_exc*hbar);
 
@@ -35,8 +33,9 @@ laser_energy = h*c/laser_wavelength;
 
 
 upper_limit_ground = floor(lmb_ground-1/2);
-% upper_limit_exc = floor(lmb_exc-1/2);
-upper_limit_exc = 5;
+% upper_limit_ground = 40;
+upper_limit_exc = floor(lmb_exc-1/2);
+% upper_limit_exc = 5;
 
 lower_limit_ground = 0;
 lower_limit_exc = 0;
@@ -77,7 +76,7 @@ energy_difference = electronic_energy*ones(upper_limit_ground+1-lower_limit_grou
 for j=lower_limit_ground:upper_limit_ground
     for k=lower_limit_exc:upper_limit_exc
         fprintf("j=%d, k=%d\n",j,k)
-        energy_difference(j+1,k+1) = morse_energy_exc(k) - morse_energy_ground(j);
+        energy_difference(j+1,k+1) = energy_difference(j+1,k+1) + morse_energy_exc(k) - morse_energy_ground(j);
     end
 end
 
@@ -90,9 +89,9 @@ ylabel("j")
 colorbar
 
 %%
-overlap = overlap(:,1); energy_difference = energy_difference(:,1);
+overlap_one = overlap(:,1); energy_difference_one = energy_difference(:,1);
 clf
-flat_energy = reshape(energy_difference, [1 numel(energy_difference)]);
+flat_energy = reshape(energy_difference_one, [1 numel(energy_difference_one)]);
 
 flat_overlap = reshape(overlap, [1 numel(overlap)]);
 % flat_overlap = flat_overlap / max(flat_overlap);
@@ -101,13 +100,13 @@ wavelength = energy_to_m(flat_energy);
 % Choose interval and sigma
 % interval_start = 0e-6;
 % interval_end = 1e-6;
-% sig = 3e-9;  % sigma for gauss distribution
+sig = 2e-9;  % sigma for gauss distribution
 % 
 % wavelength = wavelength(wavelength>interval_start & wavelength<interval_end);
 % flat_overlap = flat_overlap(wavelength>interval_start & wavelength<interval_end);
 
 
-x = linspace(min(wavelength),max(wavelength),10000);
+x = linspace(500e-9,1300e-9,10000);
 y = 0*x;
 
 for j=1:length(wavelength)
@@ -118,21 +117,20 @@ end
 % y(x<610e-9) = 0;
 y = y/max(y);
 
-plot(x,y)
+plot(x*1e9,y)
 % axis([100e-9 60000e-9 0 1])
 %% For testing
 clf
 x = linspace(1e-10,10e-10,2048);
 subplot(2,1,1)
-plot(x,morse_psi_ground(x,0,dx)), hold on
-plot(x,morse_psi_ground(x,1,dx))
-plot(x,morse_psi_ground(x,122,dx)), hold off
-legend("v=0","v=1","v=80")
+plot(x,morse_psi_ground(x,4,dx)), hold on
+% plot(x,morse_psi_ground(x,1,dx))
+% plot(x,morse_psi_ground(x,2,dx)), hold off
+% plot(x,morse_psi_ground(x,10,dx)), hold off
 % plot(x,morse_psi_ground(x,5))
 title("Ground state")
 subplot(2,1,2)
-plot(x,morse_psi_exc(x,0,dx)), hold on
-plot(x,morse_psi_exc(x,1,dx))
-plot(x,morse_psi_exc(x,48,dx)), hold off
-legend("v=0","v=1","v=2")
+plot(x,morse_psi_exc(x,4,dx)), hold on
+% plot(x,morse_psi_exc(x,1,dx))
+% plot(x,morse_psi_exc(x,2,dx)), hold off
 title("Excited state")
