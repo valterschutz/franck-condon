@@ -17,13 +17,13 @@ we_exc = inverse_cm_to_J(125.69);  % J
 % De_ground = we_ground^2/(4*we_xe_ground) - we_ground/2 + we_xe_ground/4;
 De_ground = we_ground^2/(4*we_xe_ground);
 % De_exc = we_exc^2/(4*we_xe_exc) - we_exc/2 + we_xe_exc/4;
-De_exc = we_exc^2/(4*we_xe_exc);
+De_exc = we_exc^2/(4*we_xe_exc) - we_exc/2 + we_xe_exc/4;
 a_ground = sqrt(2/we_ground);
 a_exc = sqrt(2/we_exc);
 lmb_ground = sqrt(2*mu_I2*De_ground)/(a_ground*hbar);
 lmb_exc = sqrt(2*mu_I2*De_exc)/(a_exc*hbar);
 
-electronic_energy = inverse_cm_to_J(15769.01);
+% electronic_energy = inverse_cm_to_J(15769.01);
 T = 100;  % Temperature
 laser_wavelength = 612e-9;
 laser_energy = h*c/laser_wavelength;
@@ -42,7 +42,7 @@ lower_limit_ground = 0;
 lower_limit_exc = 0;
 
 N = 2048;
-a = 1e-10; b = 9e-10;
+a = 1e-10; b = 10e-10;
 dx = (b-a)/N;
 x=linspace(a,b,N);  % Seems to fit everything
 y1=0*x;
@@ -73,7 +73,7 @@ xlabel("Vibrational mode of excited state")
 ylabel("Vibrational mode of ground state")
 colorbar
 %%
-energy_difference = electronic_energy*ones(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1-lower_limit_exc);
+energy_difference = zeros(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1-lower_limit_exc);
 for j=lower_limit_ground:upper_limit_ground
     for k=lower_limit_exc:upper_limit_exc
         fprintf("j=%d, k=%d\n",j,k)
@@ -122,11 +122,11 @@ plot(x,y)
 % axis([100e-9 60000e-9 0 1])
 %% For testing
 clf
-x = linspace(1e-10,10e-10,2048);
+x = linspace(1e-10,10e-10,1000);
 subplot(2,1,1)
 plot(x,morse_psi_ground(x,0,dx)), hold on
 plot(x,morse_psi_ground(x,1,dx))
-plot(x,morse_psi_ground(x,122,dx)), hold off
+plot(x,morse_psi_ground(x,121,dx)), hold off
 legend("v=0","v=1","v=80")
 % plot(x,morse_psi_ground(x,5))
 title("Ground state")
