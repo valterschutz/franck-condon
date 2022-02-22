@@ -50,11 +50,12 @@ y2=0*r;
 overlap0 = zeros(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1);
 for j=lower_limit_ground:upper_limit_ground
     for k=lower_limit_exc:upper_limit_exc
-        fprintf("j=%d, k=%d\n",j,k)
-        y1 = morse_psi_ground(x,j,dx);
-        y2 = morse_psi_exc(x,k,dx);
+        y1 = morse_psi_ground(r,j,dr);
+        y2 = morse_psi_exc(r,k,dr);
         % Discrete integral
-        overlap0(j+1,k+1)=sum(y1.*y2)*dx;  % One of them should be conjugated but this is not necessary since they are both real
+        val = sum(y1.*y2)*dr;
+        fprintf("j=%d, k=%d, val=%f\n",j,k,val)
+        overlap0(j+1,k+1)=val;  % One of them should be conjugated but this is not necessary since they are both real
     end
 end
 overlap = overlap0.^2;  % This is what we are interested in
@@ -62,11 +63,10 @@ overlap = overlap0.^2;  % This is what we are interested in
 %%
 clf
 load('overlap_data')
-load('overlap0_data')
 subplot(1,2,1)
 % overlap = overlap.*overlap(1,:);
 overlap = overlap./max(overlap,[],'all');
-imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], overlap)
+imagesc([lower_limit_exc upper_limit_exc], [lower_limit_ground upper_limit_ground], overlap)
 % imagesc([0 5], [lower_limit_ground upper_limit_ground], overlap(:,1:5))
 title("Probability of transition")
 xlabel("Vibrational mode of excited state")
@@ -76,7 +76,7 @@ colorbar
 energy_difference = electronic_energy*ones(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1-lower_limit_exc);
 for j=lower_limit_ground:upper_limit_ground
     for k=lower_limit_exc:upper_limit_exc
-        fprintf("j=%d, k=%d\n",j,k)
+%         fprintf("j=%d, k=%d\n",j,k)
         energy_difference(j+1,k+1) = energy_difference(j+1,k+1) + morse_energy_exc(k) - morse_energy_ground(j);
     end
 end
@@ -91,8 +91,8 @@ colorbar
 
 %%
 clf
-overlap = overlap(:,1);
-energy_difference = energy_difference(:,1);
+% overlap = overlap(:,1);
+% energy_difference = energy_difference(:,1);
 flat_energy = reshape(energy_difference, [1 numel(energy_difference)]);
 flat_overlap = reshape(overlap, [1 numel(overlap)]);
 wavelength = energy_to_m(flat_energy);
@@ -100,7 +100,7 @@ wavelength = energy_to_m(flat_energy);
 % Choose interval and sigma
 % interval_start = 0e-6;
 % interval_end = 1e-6;
-sig = 1e-9;  % sigma for gauss distribution
+sig = 2e-9;  % sigma for gauss distribution
 % 
 % wavelength = wavelength(wavelength>interval_start & wavelength<interval_end);
 % flat_overlap = flat_overlap(wavelength>interval_start & wavelength<interval_end);
@@ -118,17 +118,20 @@ end
 y = y/max(y);
 
 plot(x,y)
+xlabel("Wavelength [m]")
+ylabel("Intensity")
+title("Expected intensity from Franck-Condon theory")
 % axis([100e-9 60000e-9 0 1])
 %% For testing
 clf
 subplot(2,1,1)
-y = morse_psi_ground(x,70,dx);
-plot(x,y)
+y = morse_psi_ground(r,10,dr);
+plot(r,y)
 % plot(x,morse_psi_ground(x,10,dx)), hold off
 % plot(x,morse_psi_ground(x,5))
 title("Ground state")
 subplot(2,1,2)
-plot(r,morse_psi_exc(x,5,dr)), hold on
+plot(r,morse_psi_exc(r,8,dr)), hold on
 % plot(x,morse_psi_exc(x,1,dx))
 % plot(x,morse_psi_exc(x,2,dx)), hold off
 title("Excited state")

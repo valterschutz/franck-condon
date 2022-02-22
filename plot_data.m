@@ -1,5 +1,5 @@
 clf
-data = readmatrix('data/output4.csv');
+data = readmatrix('data/output1.csv');
 data(:,1) = data(:,1) * 1e-9;
 data(:,2) = data(:,2) - min(data(:,2));
 data(:,2) = data(:,2) / max(data(:,2));
