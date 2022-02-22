@@ -64,7 +64,8 @@ clf
 load('overlap_data')
 load('overlap0_data')
 subplot(1,2,1)
-overlap = overlap.*overlap(1,:);
+% overlap = overlap.*overlap(1,:);
+overlap = overlap./max(overlap,[],'all');
 imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], overlap)
 % imagesc([0 5], [lower_limit_ground upper_limit_ground], overlap(:,1:5))
 title("Probability of transition")
@@ -89,18 +90,17 @@ ylabel("j")
 colorbar
 
 %%
-% overlap_one = overlap(:,1); energy_difference_one = energy_difference(:,1);
 clf
+overlap = overlap(:,1);
+energy_difference = energy_difference(:,1);
 flat_energy = reshape(energy_difference, [1 numel(energy_difference)]);
-
 flat_overlap = reshape(overlap, [1 numel(overlap)]);
-% flat_overlap = flat_overlap / max(flat_overlap);
 wavelength = energy_to_m(flat_energy);
 
 % Choose interval and sigma
 % interval_start = 0e-6;
 % interval_end = 1e-6;
-sig = 2e-9;  % sigma for gauss distribution
+sig = 1e-9;  % sigma for gauss distribution
 % 
 % wavelength = wavelength(wavelength>interval_start & wavelength<interval_end);
 % flat_overlap = flat_overlap(wavelength>interval_start & wavelength<interval_end);
@@ -117,7 +117,7 @@ end
 % y(x<610e-9) = 0;
 y = y/max(y);
 
-plot(x*1e9,y)
+plot(x,y)
 % axis([100e-9 60000e-9 0 1])
 %% For testing
 clf
