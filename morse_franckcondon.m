@@ -32,10 +32,10 @@ laser_energy = h*c/laser_wavelength;
 % that the vibrational quantum number must be 0 in the excited state
 
 
-upper_limit_ground = floor(lmb_ground-1/2);
-% upper_limit_ground = 40;
-upper_limit_exc = floor(lmb_exc-1/2);
-% upper_limit_exc = 5;
+% upper_limit_ground = floor(lmb_ground-1/2);
+upper_limit_ground = 70;
+% upper_limit_exc = floor(lmb_exc-1/2);
+upper_limit_exc = 5;
 
 lower_limit_ground = 0;
 lower_limit_exc = 0;
@@ -46,9 +46,6 @@ dr = (b-a)/N;
 r=linspace(a,b,N);  % Seems to fit everything
 y1=0*r;
 y2=0*r;
-
-% load('overlap_data')
-
 %%
 overlap0 = zeros(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1);
 for j=lower_limit_ground:upper_limit_ground
@@ -64,7 +61,10 @@ overlap = overlap0.^2;  % This is what we are interested in
 % overlap = overlap .* exp(-harmonic_energy_ground(0:upper_limit_exc)'/(kb*(273.15+T)));
 %%
 clf
+load('overlap_data')
+load('overlap0_data')
 subplot(1,2,1)
+overlap = overlap.*overlap(1,:);
 imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], overlap)
 % imagesc([0 5], [lower_limit_ground upper_limit_ground], overlap(:,1:5))
 title("Probability of transition")
@@ -89,9 +89,9 @@ ylabel("j")
 colorbar
 
 %%
-overlap_one = overlap(:,1); energy_difference_one = energy_difference(:,1);
+% overlap_one = overlap(:,1); energy_difference_one = energy_difference(:,1);
 clf
-flat_energy = reshape(energy_difference_one, [1 numel(energy_difference_one)]);
+flat_energy = reshape(energy_difference, [1 numel(energy_difference)]);
 
 flat_overlap = reshape(overlap, [1 numel(overlap)]);
 % flat_overlap = flat_overlap / max(flat_overlap);
