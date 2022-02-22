@@ -35,7 +35,7 @@ laser_energy = h*c/laser_wavelength;
 % upper_limit_ground = floor(lmb_ground-1/2);
 upper_limit_ground = 70;
 % upper_limit_exc = floor(lmb_exc-1/2);
-upper_limit_exc = 5;
+upper_limit_exc = 15;
 
 lower_limit_ground = 0;
 lower_limit_exc = 0;
@@ -62,7 +62,7 @@ overlap = overlap0.^2;  % This is what we are interested in
 % overlap = overlap .* exp(-harmonic_energy_ground(0:upper_limit_exc)'/(kb*(273.15+T)));
 %%
 clf
-load('overlap_data')
+load('overlap_data_final')
 subplot(1,2,1)
 % overlap = overlap.*overlap(1,:);
 overlap = overlap./max(overlap,[],'all');
@@ -73,6 +73,7 @@ xlabel("Vibrational mode of excited state")
 ylabel("Vibrational mode of ground state")
 colorbar
 %%
+
 energy_difference = electronic_energy*ones(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1-lower_limit_exc);
 for j=lower_limit_ground:upper_limit_ground
     for k=lower_limit_exc:upper_limit_exc
@@ -91,8 +92,7 @@ colorbar
 
 %%
 clf
-% overlap = overlap(:,1);
-% energy_difference = energy_difference(:,1);
+% overlap = overlap(:,10); energy_difference = energy_difference(:,10);
 flat_energy = reshape(energy_difference, [1 numel(energy_difference)]);
 flat_overlap = reshape(overlap, [1 numel(overlap)]);
 wavelength = energy_to_m(flat_energy);
