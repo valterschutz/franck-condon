@@ -5,6 +5,8 @@ h = 6.626e-34;  % J/Hz
 hbar = h/(2*pi);  % J/Hz
 c = 299792458;  % m/s
 
+SCALING = 8.5e2;
+
 % Constants for iodine
 mu_I2 = 126.90447/2*u;  % kg
 re = 2.666e-10;  % m
@@ -17,7 +19,8 @@ x = a*r;
 xe = a*re;
 
 z = 2*lmb*exp(xe-x);
-y = z.^(lmb-n-1/2).*exp(-z/2).*laguerreL(n, 2*lmb-2*n-1,z);
+% y = z.^(lmb-n-1/2).*exp(-z/2).*laguerreL(n, 2*lmb-2*n-1,z);
+y = exp(log(z)*(lmb-n-1/2)-z/2-SCALING).*laguerreL(n, 2*lmb-2*n-1,z);
 
 % Normalization
 N = sum(y.^2)*dx;

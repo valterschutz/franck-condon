@@ -42,10 +42,10 @@ lower_limit_exc = 0;
 
 N = 2048;
 a = 1e-10; b = 9e-10;
-dx = (b-a)/N;
-x=linspace(a,b,N);  % Seems to fit everything
-y1=0*x;
-y2=0*x;
+dr = (b-a)/N;
+r=linspace(a,b,N);  % Seems to fit everything
+y1=0*r;
+y2=0*r;
 
 % load('overlap_data')
 
@@ -121,16 +121,14 @@ plot(x*1e9,y)
 % axis([100e-9 60000e-9 0 1])
 %% For testing
 clf
-x = linspace(1e-10,10e-10,2048);
 subplot(2,1,1)
-plot(x,morse_psi_ground(x,4,dx)), hold on
-% plot(x,morse_psi_ground(x,1,dx))
-% plot(x,morse_psi_ground(x,2,dx)), hold off
+y = morse_psi_ground(x,70,dx);
+plot(x,y)
 % plot(x,morse_psi_ground(x,10,dx)), hold off
 % plot(x,morse_psi_ground(x,5))
 title("Ground state")
 subplot(2,1,2)
-plot(x,morse_psi_exc(x,4,dx)), hold on
+plot(r,morse_psi_exc(x,5,dr)), hold on
 % plot(x,morse_psi_exc(x,1,dx))
 % plot(x,morse_psi_exc(x,2,dx)), hold off
 title("Excited state")
