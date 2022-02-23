@@ -1,3 +1,4 @@
+%% RUN THIS FIRST
 % Universal constants
 u = 1.66e-27;  % kg
 eV = 1.602e-19;  % J
@@ -46,7 +47,7 @@ dr = (b-a)/N;
 r=linspace(a,b,N);  % Seems to fit everything
 y1=0*r;
 y2=0*r;
-%%
+%% DO NOT RUN THIS, EXCEPT WHEN CALCULATING NEW INTEGRALS (TAKES TIME)
 overlap0 = zeros(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1);
 for j=lower_limit_ground:upper_limit_ground
     for k=lower_limit_exc:upper_limit_exc
@@ -60,68 +61,57 @@ for j=lower_limit_ground:upper_limit_ground
 end
 overlap = overlap0.^2;  % This is what we are interested in
 % overlap = overlap .* exp(-harmonic_energy_ground(0:upper_limit_exc)'/(kb*(273.15+T)));
-%%
+%% RUN THIS
 clf
 load('overlap_data_final')
 subplot(1,2,1)
-% overlap = overlap.*overlap(1,:);
 overlap = overlap./max(overlap,[],'all');
 imagesc([lower_limit_exc upper_limit_exc], [lower_limit_ground upper_limit_ground], overlap)
-% imagesc([0 5], [lower_limit_ground upper_limit_ground], overlap(:,1:5))
 title("Probability of transition")
 xlabel("Vibrational mode of excited state")
 ylabel("Vibrational mode of ground state")
 colorbar
-%%
-
+%% AND THIS
 energy_difference = electronic_energy*ones(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1-lower_limit_exc);
 for j=lower_limit_ground:upper_limit_ground
     for k=lower_limit_exc:upper_limit_exc
-%         fprintf("j=%d, k=%d\n",j,k)
         energy_difference(j+1,k+1) = energy_difference(j+1,k+1) + morse_energy_exc(k) - morse_energy_ground(j);
     end
 end
 
 subplot(1,2,2)
 imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], energy_difference)
-% imagesc([0 5], [lower_limit_ground upper_limit_ground], energy_difference(:,1:5))
 title("Energy difference E_{exc}(k) - E_{ground}(j)")
 xlabel("k")
 ylabel("j")
 colorbar
 
-%%
+%% AND FINALLY THIS
 clf
-% overlap = overlap(:,10); energy_difference = energy_difference(:,10);
+QUANTUM_NUMBER_EXCITED = 5;  % Change this to look at radiation from different vibrational levels
+overlap = overlap(:,QUANTUM_NUMBER_EXCITED); energy_difference = energy_difference(:,QUANTUM_NUMBER_EXCITED);
 flat_energy = reshape(energy_difference, [1 numel(energy_difference)]);
 flat_overlap = reshape(overlap, [1 numel(overlap)]);
 wavelength = energy_to_m(flat_energy);
 
 % Choose interval and sigma
-% interval_start = 0e-6;
-% interval_end = 1e-6;
+interval_start = 500e-9;
+interval_end = 1300e-9;
 sig = 2e-9;  % sigma for gauss distribution
-% 
-% wavelength = wavelength(wavelength>interval_start & wavelength<interval_end);
-% flat_overlap = flat_overlap(wavelength>interval_start & wavelength<interval_end);
 
-
-x = linspace(500e-9,1300e-9,10000);
+x = linspace(interval_start,interval_end,10000);
 y = 0*x;
 
 for j=1:length(wavelength)
     y = y + flat_overlap(j)*gauss(x,wavelength(j),sig);
 end
 
-
-% y(x<610e-9) = 0;
 y = y/max(y);
 
 plot(x,y)
 xlabel("Wavelength [m]")
 ylabel("Intensity")
 title("Expected intensity from Franck-Condon theory")
-% axis([100e-9 60000e-9 0 1])
 %% For testing
 clf
 subplot(2,1,1)
