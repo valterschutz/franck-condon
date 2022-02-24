@@ -1,4 +1,4 @@
-function y = morse_psi_exc(r, n, dx)
+function y = morse_psi_exc(r, n, dx, re)
 % Universal constants
 u = 1.66e-27;  % kg
 h = 6.626e-34;  % J/Hz
@@ -7,7 +7,6 @@ c = 299792458;  % m/s
 
 % Constants for iodine
 mu_I2 = 126.90447/2*u;  % kg
-re = 3.024e-10;  % m
 we_xe = 0.764*100;  % m-1
 we = 125.69*100;  % m-1
 De = h*c*we^2/(4*we_xe);  % J
