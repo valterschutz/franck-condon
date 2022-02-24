@@ -15,25 +15,8 @@ re_ground = 2.666e-10;  % m
 re_exc_og = 3.024e-10;  % m
 delta_re_exc = (re_exc_og-re_ground)/10;  % 20% difference
 re_exc = linspace(re_exc_og-delta_re_exc, re_exc_og+delta_re_exc, 5);  % List of re_exc values
-we_xe_ground = 0.614*100;  % m-1
-we_xe_exc = 0.764*100;  % m-1
-we_ground = 214.50*100; % m-1
-we_exc = 125.69*100;  % m-1
-De_ground = h*c*we_ground^2/(4*we_xe_ground);  % J
-De_exc = h*c*we_exc^2/(4*we_xe_exc);  % J
-a_ground = we_ground*2*pi*c*sqrt(mu_I2/(2*De_ground));  % m-1
-a_exc = we_exc*2*pi*c*sqrt(mu_I2/(2*De_exc));  % m-1
-lmb_ground = sqrt(2*mu_I2*De_ground)/(a_ground*hbar);
-lmb_exc = sqrt(2*mu_I2*De_exc)/(a_exc*hbar);
 
-electronic_energy = inverse_cm_to_J(15769.01);
-T = 100;  % Temperature
-laser_wavelength = 612e-9;
-laser_energy = h*c/laser_wavelength;
-
-% upper_limit_ground = floor(lmb_ground-1/2);
 upper_limit_ground = 30;
-% upper_limit_exc = floor(lmb_exc-1/2);
 upper_limit_exc = 15;
 
 lower_limit_ground = 0;

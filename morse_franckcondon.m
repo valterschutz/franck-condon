@@ -9,12 +9,7 @@ c = 299792458;  % m/s
 
 % Constants for iodine
 mu_I2 = 126.90447/2*u;  % kg
-re_ground = 2.666e-10;  % m
 
-% Run program for several different re_exc. Original is 3.024e-10. Choose
-% from linspace(re_ground,re_exc_og,5)
-re_exc_og = 3.024e-10;  % m
-re_exc = 3.024e-10;  % m
 we_xe_ground = 0.614*100;  % m-1
 we_xe_exc = 0.764*100;  % m-1
 we_ground = 214.50*100; % m-1
@@ -27,19 +22,17 @@ lmb_ground = sqrt(2*mu_I2*De_ground)/(a_ground*hbar);
 lmb_exc = sqrt(2*mu_I2*De_exc)/(a_exc*hbar);
 
 electronic_energy = inverse_cm_to_J(15769.01);
-T = 100;  % Temperature
+
 laser_wavelength = 612e-9;
 laser_energy = h*c/laser_wavelength;
+vibration_energy = laser_energy - electronic_energy;  % Energy left for vibration
 
-% vibration_energy = laser_energy - electronic_energy;  % Energy left for vibration
-
-% abs(vibration_energy - (energy_exc(0:32)-energy_ground(0)))  % This shows
-% that the vibrational quantum number must be 0 in the excited state
+% vibration_energy - (morse_energy_exc(0:32)-morse_energy_ground(0))  % Exactly enough energy for fifth vibrational level in excited state 
 
 
-% upper_limit_ground = floor(lmb_ground-1/2);
-upper_limit_ground = 70;
-% upper_limit_exc = floor(lmb_exc-1/2);
+% upper_limit_ground_theory = floor(lmb_ground-1/2);
+upper_limit_ground = 20;
+% upper_limit_exc_theory = floor(lmb_exc-1/2);
 upper_limit_exc = 15;
 
 lower_limit_ground = 0;
