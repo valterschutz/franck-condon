@@ -46,7 +46,7 @@ y1=0*r;
 y2=0*r;
 %% RUN THIS
 clf
-load('overlap_data_final')
+load('overlap_data/overlap_data_re_1')
 subplot(1,3,1)
 overlap = overlap./max(overlap,[],'all');
 imagesc([lower_limit_exc upper_limit_exc], [lower_limit_ground upper_limit_ground], overlap)
@@ -54,7 +54,7 @@ title("Probability of transition")
 xlabel("Vibrational mode of excited state")
 ylabel("Vibrational mode of ground state")
 colorbar
-%% AND THIS
+
 energy_difference = electronic_energy*ones(upper_limit_ground+1-lower_limit_ground, upper_limit_exc+1-lower_limit_exc);
 for j=lower_limit_ground:upper_limit_ground
     for k=lower_limit_exc:upper_limit_exc
@@ -84,6 +84,9 @@ for j=1:length(exp_energies)
     imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], A, 'AlphaData', A), hold on
 end
 hold off
+title("Measured intensity")
+xlabel("Predicted k")
+ylabel("Predicted j")
 
 
 %% AND FINALLY THIS
@@ -96,7 +99,7 @@ ylabel("Intensity")
 
 % Now plot theoretical data
 % Change this to look at radiation from different vibrational levels
-overlap_plot = overlap(:,:); energy_difference_plot = energy_difference(:,:);
+overlap_plot = overlap(:,7); energy_difference_plot = energy_difference(:,7);
 flat_energy = reshape(energy_difference_plot, [1 numel(energy_difference_plot)]);
 flat_overlap = reshape(overlap_plot, [1 numel(overlap_plot)]);
 wavelength = energy_to_m(flat_energy);
