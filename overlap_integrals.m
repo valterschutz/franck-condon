@@ -17,7 +17,7 @@ delta_re_exc = (re_exc_og-re_ground)/2;
 re_exc = linspace(re_exc_og-delta_re_exc, re_exc_og, 5);  % List of re_exc values
 
 upper_limit_ground = 30;
-upper_limit_exc = 20;
+upper_limit_exc = 30;
 
 lower_limit_ground = 0;
 lower_limit_exc = 0;
