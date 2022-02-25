@@ -13,11 +13,11 @@ re_ground = 2.666e-10;  % m
 
 % Run program for several different re_exc. Original is 3.024e-10.
 re_exc_og = 3.024e-10;  % m
-delta_re_exc = (re_exc_og-re_ground)/10;  % 20% difference
-re_exc = linspace(re_exc_og-delta_re_exc, re_exc_og+delta_re_exc, 5);  % List of re_exc values
+delta_re_exc = (re_exc_og-re_ground)/2;
+re_exc = linspace(re_exc_og-delta_re_exc, re_exc_og, 5);  % List of re_exc values
 
 upper_limit_ground = 30;
-upper_limit_exc = 15;
+upper_limit_exc = 20;
 
 lower_limit_ground = 0;
 lower_limit_exc = 0;
@@ -42,6 +42,6 @@ for m=1:length(re_exc)
         end
     end
     overlap = overlap0.^2;  % This is what we are interested in
-    filename = sprintf("overlap_data_re_%d", m);
+    filename = sprintf("overlap_data_smaller_re_%d", m);
     save(filename, 'overlap')
 end

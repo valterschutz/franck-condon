@@ -70,9 +70,11 @@ ylabel("j")
 colorbar
 
 % Plot energies that are experimentally measured (output1.csv)
-exp_wavelengths = [5.81746e-07, 5.89153e-07, 5.96184e-07, 6.03996e-07, 6.11903e-07, 6.19653e-07, 6.27996e-07, 6.36465e-07, 6.44871e-07,6.53434e-07, 6.62496e-07, 6.71465e-07, 6.80371e-07, 6.8984e-07, 6.92653e-07, 6.99715e-07, 7.02965e-07, 7.06528e-07, 7.09715e-07, 7.24153e-07, 7.29778e-07, 7.4009e-07, 7.50809e-07, 7.61746e-07, 7.72903e-07, 7.77684e-07, 7.84246e-07];
-exp_intensities = [0.014068, 0.0153546, 0.0162136, 0.035622, 1, 0.162708, 0.21963, 0.166461, 0.0365643, 0.242126, 0.0957773, 0.0896708, 0.0163895, 0.0285911, 0.0152358, 0.0759446, 0.0147762, 0.0343232, 0.0375311, 0.0186084, 0.0293969, 0.0361266, 0.0129227, 0.0109756, 0.0226675, 0.0178466, 0.0186132];
-
+% exp_wavelengths = [5.81746e-07, 5.89153e-07, 5.96184e-07, 6.03996e-07, 6.11903e-07, 6.19653e-07, 6.27996e-07, 6.36465e-07, 6.44871e-07,6.53434e-07, 6.62496e-07, 6.71465e-07, 6.80371e-07, 6.8984e-07, 6.92653e-07, 6.99715e-07, 7.02965e-07, 7.06528e-07, 7.09715e-07, 7.24153e-07, 7.29778e-07, 7.4009e-07, 7.50809e-07, 7.61746e-07, 7.72903e-07, 7.77684e-07, 7.84246e-07];
+% exp_intensities = [0.014068, 0.0153546, 0.0162136, 0.035622, 1, 0.162708, 0.21963, 0.166461, 0.0365643, 0.242126, 0.0957773, 0.0896708, 0.0163895, 0.0285911, 0.0152358, 0.0759446, 0.0147762, 0.0343232, 0.0375311, 0.0186084, 0.0293969, 0.0361266, 0.0129227, 0.0109756, 0.0226675, 0.0178466, 0.0186132];
+exp_wavelengths = [5.81746e-07, 5.89153e-07, 5.96184e-07, 6.03996e-07, 6.19653e-07, 6.27996e-07, 6.36465e-07, 6.44871e-07,6.53434e-07, 6.62496e-07, 6.71465e-07, 6.80371e-07, 6.8984e-07, 6.92653e-07, 6.99715e-07, 7.02965e-07, 7.06528e-07, 7.09715e-07, 7.24153e-07, 7.29778e-07, 7.4009e-07, 7.50809e-07, 7.61746e-07, 7.72903e-07, 7.77684e-07, 7.84246e-07];
+exp_intensities = [0.014068, 0.0153546, 0.0162136, 0.035622, 0.162708, 0.21963, 0.166461, 0.0365643, 0.242126, 0.0957773, 0.0896708, 0.0163895, 0.0285911, 0.0152358, 0.0759446, 0.0147762, 0.0343232, 0.0375311, 0.0186084, 0.0293969, 0.0361266, 0.0129227, 0.0109756, 0.0226675, 0.0178466, 0.0186132];
+exp_intensities = exp_intensities / max(exp_intensities);
 exp_energies = h*c./exp_wavelengths;
 
 subplot(1,3,3)
@@ -92,14 +94,15 @@ ylabel("Predicted j")
 %% AND FINALLY THIS
 clf
 % First plot experimental data
-bar(exp_wavelengths, exp_intensities), hold on
+% bar(exp_wavelengths, exp_intensities)
+hold on
 title("Experimental data")
 xlabel("Wavelength [m]")
 ylabel("Intensity")
 
 % Now plot theoretical data
 % Change this to look at radiation from different vibrational levels
-overlap_plot = overlap(:,7); energy_difference_plot = energy_difference(:,7);
+overlap_plot = overlap(:,6); energy_difference_plot = energy_difference(:,6);
 flat_energy = reshape(energy_difference_plot, [1 numel(energy_difference_plot)]);
 flat_overlap = reshape(overlap_plot, [1 numel(overlap_plot)]);
 wavelength = energy_to_m(flat_energy);
@@ -118,10 +121,15 @@ end
 
 y = y/max(y);
 
-plot(x,y), hold off
+plot(x,y)
 xlabel("Wavelength [m]")
 ylabel("Intensity")
 title("Expected intensity from Franck-Condon theory")
+
+calibration = h*c/inverse_cm_to_J(15797.976);  % Should be strongest line
+xline(calibration,'r','linewidth',2)
+xline(h*c/(electronic_energy+morse_energy_exc(6)-morse_energy_ground(3)),'linewidth',2)
+hold off
 %% For testing
 clf
 subplot(2,1,1)
