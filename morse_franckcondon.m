@@ -115,21 +115,20 @@ end
 y = y/max(y);
 subplot(2,1,1)
 % bar(exp_wavelengths, exp_intensities)
-plot(x,y)
-title("Experimental data")
-xlabel("Wavelength [m]")
-ylabel("Intensity")
+plot(x,y,'linewidth',2)
+grid on
+xticks((600:10:750)*1e-9); xt=xticks; xticklabels(xt*1e9)
+title("Experimental data",'fontsize',16)
+yticklabels([])
+xlabel("Wavelength [nm]")
+ylabel("Relative intensity")
 axis([interval_start interval_end 0 1])
 
 % Now plot theoretical data
-% Change this to look at radiation from different vibrational levels
-overlap_plot = overlap(:,5); energy_difference_plot = energy_difference(:,5);
+overlap_plot = overlap(:,10); energy_difference_plot = energy_difference(:,10);
 flat_energy = reshape(energy_difference_plot, [1 numel(energy_difference_plot)]);
 flat_overlap = reshape(overlap_plot, [1 numel(overlap_plot)]);
 wavelength = energy_to_m(flat_energy);
-
-
-
 
 y = 0*x;
 
@@ -140,16 +139,14 @@ end
 y = y/max(y);
 
 subplot(2,1,2)
-plot(x,y)
-xlabel("Wavelength [m]")
-ylabel("Intensity")
-title("Expected intensity from Franck-Condon theory")
+plot(x,y,'linewidth',2)
+grid on
+xticks((600:10:750)*1e-9); xt=xticks; xticklabels(xt*1e9)
+xlabel("Wavelength [nm]")
+ylabel("Relative intensity")
+title("Expected intensity from Franck-Condon theory (v'=9, v''=0,...,70)",'fontsize',16)
+yticklabels([])
 axis([interval_start interval_end 0 1])
-
-calibration = h*c/inverse_cm_to_J(15797.976);  % Should be strongest line
-% xline(calibration,'r','linewidth',2)
-% xline(h*c/(electronic_energy+morse_energy_exc(6)-morse_energy_ground(3)),'linewidth',2)
-hold off
 %% For testing
 clf
 re_exc_og = 3.024e-10;  % m
