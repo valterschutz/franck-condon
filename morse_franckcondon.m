@@ -8,7 +8,7 @@ kb = 1.380649e-23;  % J/K, Boltzman
 c = 299792458;  % m/s
 
 % Temperature
-T = 273.15+90;
+T = 273.15+75;
 
 % Constants for iodine
 mu_I2 = 126.90447/2*u;  % kg
@@ -69,7 +69,7 @@ for j=lower_limit_ground:upper_limit_ground
 end
 
 subplot(1,2,2)
-imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], energy_difference)
+imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], energy_difference), hold on
 title("\Delta E = E_{electronic} + E_{exc}(v') - E_{ground}(v'') [eV]",'fontsize',16)
 xlabel("v'",'fontsize',14)
 ylabel("v''",'fontsize',14)
@@ -100,6 +100,16 @@ exp_intensities = exp_intensities / max(exp_intensities);
 % title("Measured intensity")
 % xlabel("Predicted k")
 % ylabel("Predicted j")
+
+% Plot lines corresponding to laser energy
+laser_matrix = energy_difference;
+laser_index = abs(laser_matrix-laser_energy)<0.005*eV;
+not_laser_index = abs(laser_matrix-laser_energy)>=0.005*eV;
+laser_matrix(laser_index) = 1;
+laser_matrix(not_laser_index) = 0;
+imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], laser_matrix, 'AlphaData',1), hold off
+
+
 
 
 %% AND FINALLY THIS
