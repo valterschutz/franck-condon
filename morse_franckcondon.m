@@ -129,7 +129,7 @@ for j=1:length(exp_wavelengths)
 end
 
 y = y/max(y);
-subplot(2,1,1)
+subplot(3,1,1)
 % bar(exp_wavelengths, exp_intensities)
 plot(x,y,'linewidth',2)
 grid on
@@ -140,7 +140,7 @@ xlabel("Wavelength [nm]")
 ylabel("Relative intensity")
 axis([interval_start interval_end 0 1])
 
-% Now plot theoretical data
+% Now plot theoretical data v'=9
 overlap_plot = overlap(:,10); energy_difference_plot = energy_difference(:,10);
 % overlap_plot = overlap(1:15, 2:16); energy_difference_plot = energy_difference(1:15,2:16);
 flat_energy = reshape(energy_difference_plot, [1 numel(energy_difference_plot)]);
@@ -157,13 +157,37 @@ end
 
 y = y/max(y);
 
-subplot(2,1,2)
+subplot(3,1,2)
 plot(x,y,'linewidth',2)
 grid on
 xticks((600:10:750)*1e-9); xt=xticks; xticklabels(xt*1e9)
 xlabel("Wavelength [nm]")
 ylabel("Relative intensity")
 title("Expected intensity from Franck-Condon theory (v'=9, v''=0,...,70)",'fontsize',16)
+yticklabels([])
+axis([interval_start interval_end 0 1])
+
+% Now plot theoretical data v'=11
+overlap_plot = overlap(:,12); energy_difference_plot = energy_difference(:,12);
+flat_energy = reshape(energy_difference_plot, [1 numel(energy_difference_plot)]);
+flat_overlap = reshape(overlap_plot, [1 numel(overlap_plot)]);
+wavelength = energy_to_m(flat_energy);
+
+y = 0*x;
+
+for j=1:length(wavelength)
+    y = y + flat_overlap(j)*gauss(x,wavelength(j),sig);
+end
+
+y = y/max(y);
+
+subplot(3,1,3)
+plot(x,y,'linewidth',2)
+grid on
+xticks((600:10:750)*1e-9); xt=xticks; xticklabels(xt*1e9)
+xlabel("Wavelength [nm]")
+ylabel("Relative intensity")
+title("Expected intensity from Franck-Condon theory (v'=11, v''=0,...,70)",'fontsize',16)
 yticklabels([])
 axis([interval_start interval_end 0 1])
 %% For testing
