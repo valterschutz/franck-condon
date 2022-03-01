@@ -19,7 +19,6 @@ x = a*r;
 xe = a*re;
 
 z = 2*lmb*exp(xe-x);
-% y = z.^(lmb-n-1/2).*exp(-z/2).*laguerreL(n, 2*lmb-2*n-1,z);
 y = exp(log(z)*(lmb-n-1/2)-z/2-SCALING).*laguerreL(n, 2*lmb-2*n-1,z);
 
 % Normalization

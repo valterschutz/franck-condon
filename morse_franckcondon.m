@@ -32,9 +32,6 @@ laser_wavelength = 612e-9;
 laser_energy = h*c/laser_wavelength;
 vibration_energy = laser_energy - electronic_energy;  % Energy left for vibration
 
-% vibration_energy - (morse_energy_exc(0:32)-morse_energy_ground(0))  % Exactly enough energy for fifth vibrational level in excited state 
-
-
 % upper_limit_ground_theory = floor(lmb_ground-1/2);
 upper_limit_ground = 70;
 % upper_limit_exc_theory = floor(lmb_exc-1/2);
@@ -46,10 +43,10 @@ lower_limit_exc = 0;
 N = 2048;
 a = 1e-10; b = 9e-10;
 dr = (b-a)/N;
-r=linspace(a,b,N);  % Seems to fit everything
+r=linspace(a,b,N);
 y1=0*r;
 y2=0*r;
-%% RUN THIS
+%% AND THIS
 clf
 load('overlap_data/overlap_data_final')
 subplot(1,2,1)
@@ -80,38 +77,19 @@ energy_ticks = energy_labels*eV;
 colorbar('Ticks',energy_ticks, 'TickLabels', energy_labels)
 
 % Plot energies that are experimentally measured (output1.csv)
-% exp_wavelengths = [5.81746e-07, 5.89153e-07, 5.96184e-07, 6.03996e-07, 6.11903e-07, 6.19653e-07, 6.27996e-07, 6.36465e-07, 6.44871e-07,6.53434e-07, 6.62496e-07, 6.71465e-07, 6.80371e-07, 6.8984e-07, 6.92653e-07, 6.99715e-07, 7.02965e-07, 7.06528e-07, 7.09715e-07, 7.24153e-07, 7.29778e-07, 7.4009e-07, 7.50809e-07, 7.61746e-07, 7.72903e-07, 7.77684e-07, 7.84246e-07];
-% exp_intensities = [0.014068, 0.0153546, 0.0162136, 0.035622, 1, 0.162708, 0.21963, 0.166461, 0.0365643, 0.242126, 0.0957773, 0.0896708, 0.0163895, 0.0285911, 0.0152358, 0.0759446, 0.0147762, 0.0343232, 0.0375311, 0.0186084, 0.0293969, 0.0361266, 0.0129227, 0.0109756, 0.0226675, 0.0178466, 0.0186132];
 exp_wavelengths = [5.81746e-07, 5.89153e-07, 5.96184e-07, 6.03996e-07, 6.19653e-07, 6.27996e-07, 6.36465e-07, 6.44871e-07,6.53434e-07, 6.62496e-07, 6.71465e-07, 6.80371e-07, 6.8984e-07, 6.92653e-07, 6.99715e-07, 7.02965e-07, 7.06528e-07, 7.09715e-07, 7.24153e-07, 7.29778e-07, 7.4009e-07, 7.50809e-07, 7.61746e-07, 7.72903e-07, 7.77684e-07, 7.84246e-07];
 exp_intensities = [0.014068, 0.0153546, 0.0162136, 0.035622, 0.162708, 0.21963, 0.166461, 0.0365643, 0.0242126, 0.0957773, 0.0896708, 0.0163895, 0.0285911, 0.0152358, 0.0759446, 0.0147762, 0.0343232, 0.0375311, 0.0186084, 0.0293969, 0.0361266, 0.0129227, 0.0109756, 0.0226675, 0.0178466, 0.0186132];
 exp_energies = h*c./exp_wavelengths;
 exp_intensities = exp_intensities / max(exp_intensities);
 
-
-% subplot(1,3,3)
-% eps = 1e-20;
-% for j=1:length(exp_energies)
-%     A = abs(energy_difference - exp_energies(j));
-%     A(A > min(A,[],'all')+eps) = 0;
-%     A = A./max(A,[],'all') * log(1+exp_intensities(j));
-%     imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], A, 'AlphaData', A), hold on
-% end
-% hold off
-% title("Measured intensity")
-% xlabel("Predicted k")
-% ylabel("Predicted j")
-
-% Plot lines corresponding to laser energy
-laser_matrix = energy_difference;
-laser_index = abs(laser_matrix-laser_energy)<0.005*eV;
-not_laser_index = abs(laser_matrix-laser_energy)>=0.005*eV;
-laser_matrix(laser_index) = 1;
-laser_matrix(not_laser_index) = 0;
-imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], laser_matrix, 'AlphaData',1), hold off
-
-
-
-
+% Uncomment to plot lines corresponding to laser energy
+% laser_matrix = energy_difference;
+% eps = 0.003*eV;
+% laser_index = abs(laser_matrix-laser_energy)<eps;
+% not_laser_index = abs(laser_matrix-laser_energy)>=eps;
+% laser_matrix(laser_index) = 1;
+% laser_matrix(not_laser_index) = 0;
+% imagesc([0 upper_limit_exc], [lower_limit_ground upper_limit_ground], laser_matrix, 'AlphaData',1), hold off
 %% AND FINALLY THIS
 clf
 
@@ -130,7 +108,6 @@ end
 
 y = y/max(y);
 subplot(3,1,1)
-% bar(exp_wavelengths, exp_intensities)
 plot(x,y,'linewidth',2)
 grid on
 xticks((600:10:750)*1e-9); xt=xticks; xticklabels(xt*1e9)
@@ -140,13 +117,10 @@ xlabel("Wavelength [nm]")
 ylabel("Relative intensity")
 axis([interval_start interval_end 0 1])
 
-% Now plot theoretical data v'=9
+% Now plot theoretical data for v'=9
 overlap_plot = overlap(:,10); energy_difference_plot = energy_difference(:,10);
-% overlap_plot = overlap(1:15, 2:16); energy_difference_plot = energy_difference(1:15,2:16);
 flat_energy = reshape(energy_difference_plot, [1 numel(energy_difference_plot)]);
 flat_overlap = reshape(overlap_plot, [1 numel(overlap_plot)]);
-% Apply Boltzmann factor
-% flat_overlap = flat_overlap .* exp(h*w_exc*(9-(lower_limit_ground:upper_limit_ground))/(kb*T));
 wavelength = energy_to_m(flat_energy);
 
 y = 0*x;
@@ -167,7 +141,7 @@ title("Expected intensity from Franck-Condon theory (v'=9, v''=0,...,70)",'fonts
 yticklabels([])
 axis([interval_start interval_end 0 1])
 
-% Now plot theoretical data v'=11
+% Now plot theoretical data for v'=11
 overlap_plot = overlap(:,12); energy_difference_plot = energy_difference(:,12);
 flat_energy = reshape(energy_difference_plot, [1 numel(energy_difference_plot)]);
 flat_overlap = reshape(overlap_plot, [1 numel(overlap_plot)]);
@@ -190,7 +164,7 @@ ylabel("Relative intensity")
 title("Expected intensity from Franck-Condon theory (v'=11, v''=0,...,70)",'fontsize',16)
 yticklabels([])
 axis([interval_start interval_end 0 1])
-%% For testing
+%% For testing, plot wavefunctions
 clf
 re_exc_og = 3.024e-10;  % m
 subplot(2,1,1)
